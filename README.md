@@ -36,6 +36,6 @@ The syntax depends on a custom note_taking-cum-documentation syntax I came up wi
 - Usage: The actual snippet generation can take a long time (approximately 40 Mins if not in test mode) due to the non-standard approach at making a Web Hook from Calendar API and Calendar Connector.
 - Standardize the tech stack
 
-  # Attributions
-  - PDF Merge and Split code by [pokyCoder](https://stackoverflow.com/users/11904337/pokycoder).
-  - Free (for professional use) [Encodian](https://www.encodian.com/products/flowr/) Images From PDF Power Automate Connector.
+# Attributions
+- PDF Merge and Split code by [pokyCoder](https://stackoverflow.com/users/11904337/pokycoder).
+- Free (for professional use) [Encodian](https://www.encodian.com/products/flowr/) Images From PDF Power Automate Connector.
