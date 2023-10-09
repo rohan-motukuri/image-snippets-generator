@@ -1,8 +1,7 @@
 **Disclaimer**: This is a personal project with no intention of commercial gain.
 
-# About
-This project aims to generate snippets of images from PDF or Image files from the comfort of one's own Google Drive. The application is designed to use the Commenting featue of Google Drive to extract specific areas of images from PDFs or Images.
-This is a complete cloud-based project built primarily on Google Suite of applications with the additon of Microsoft Power Automate as the main processing unit. 
+# G-Suite Integrated Image Snippet Generator
+This project aims to generate snippets of images from PDF or Image files from the comfort of one's own Google Drive. The application is designed to use the commenting featue of Google Drive to extract specific areas of images from PDFs or Images. This is a complete cloud-based project built primarily on Google Suite of applications with the additon of Microsoft Power Automate as the main processing unit. 
 
 ## Tools and Technologies: 
 - Google App Scripts, Microsoft Power Automate
@@ -10,7 +9,7 @@ This is a complete cloud-based project built primarily on Google Suite of applic
 - Encodian Image Extractor from PDF, PDF merge/split code from [pokyCoder](https://stackoverflow.com/users/11904337/pokycoder).
 - G-Suite of applications--Drive, Sheets, Slides
 
-# Instructions - [Demo](https://youtu.be/nqtWYWODFOM)
+## Instructions - [Demo](https://youtu.be/nqtWYWODFOM)
 1. Upload files to google drive
 2. Set there share status to public
 3. Select required sub-snippet regions on PDF or Image files with the comment's adhering to the [syntax mentioned](https://docs.google.com/document/d/1pbxdFL0Z2f1iqIg02PC6GQNMbWNAZ3l2PG5UnI94kio/edit).
