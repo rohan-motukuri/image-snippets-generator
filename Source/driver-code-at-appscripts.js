@@ -1,11 +1,23 @@
-var noteQueueFile = SpreadsheetApp.openById('1ME1MAHlg9W7fNOB3FZiVYsR_6dJUUXXtLKnFBQSnEkY');
+const responseSheetID      = PropertiesService.getScriptProperties().getProperty('responseSheetID')
+const queueSheetID         = PropertiesService.getScriptProperties().getProperty('queueSheetID')
+const intermediateFolderID = PropertiesService.getScriptProperties().getProperty('intermediateFolderID')
+const infoSheetID          = PropertiesService.getScriptProperties().getProperty('infoSheetID')
+const slideID              = PropertiesService.getScriptProperties().getProperty('slideID')
+const formBaseLink         = PropertiesService.getScriptProperties().getProperty('formBaseLink')
+const toFlowCalendarID     = PropertiesService.getScriptProperties().getProperty('toFlowCalendarID')
+const fromFlowCalendarID   = PropertiesService.getScriptProperties().getProperty('fromFlowCalendarID')
+let notifyingMail          = "20071a10a7@vnrvjiet.in"; // common.mail.tester@gmail.com
+
+const debugShowBoxes = false;
+
+const noteQueueFile = SpreadsheetApp.openById(queueSheetID);
 const noteQueueSize = noteQueueFile.getLastRow();
 const noteQueueValues = noteQueueFile.getSheetValues(1, 1, noteQueueSize, noteQueueFile.getLastColumn()).toString();
 
-var infoSheetMap = SpreadsheetApp.openById('1SFeCw14pPvjwU4Bawdu79oZ3RFG0OM90TsasXBtmJOc');
+const infoSheetMap = SpreadsheetApp.openById(infoSheetID);
 const infoSheetMapVlaues = infoSheetMap.getSheetValues(2, 1, infoSheetMap.getLastRow() - 1, infoSheetMap.getLastColumn())
 
-const midProcessFolder = DriveApp.getFolderById('134PmFwV0ngREkIX2-JzgfpabUynEqWtC');
+const midProcessFolder = DriveApp.getFolderById(intermediateFolderID);
 
 var errList = ""
 var pdfLinks = [], rawFileLinks = [], sysCalls = [], arrOfSnipInst = [];
@@ -29,7 +41,7 @@ function triggerCallNoteBuild() {
 
 function triggerCalendarFlows() {
   var syncToken = PropertiesService.getUserProperties().getProperty('NB_FLOWS_SYNC_TOKEN');
-  var page = Calendar.Events.list('dj8hjknsq82lim8l5v8jjfdvoo@group.calendar.google.com', { syncToken: syncToken });
+  var page = Calendar.Events.list(fromFlowCalendarID, { syncToken });
   if (page.items && page.items.length > 0) {
     for (var i = 0, len = page.items.length; i < len; ++i) {
       var item = page.items[i];
@@ -47,10 +59,12 @@ function interconnectionDecipher(funcCaller) {
   switch (funcCaller) {
 
     case 'Form/NoteBuild': {
-      let responseSheet = SpreadsheetApp.openById('13TbIv-cE5LE_WDm88nOvcoqv_vgk2WeHXO9qyxgSyBI')
-      let responseBody = responseSheet.getSheetValues(responseSheet.getLastRow(), 2, 1, 1)[0][0].toString()
-      let formResponse = responseBody.split('||')
-      let links = formResponse[0].split(',')
+      const responseSheet = SpreadsheetApp.openById(responseSheetID)
+      const response = responseSheet.getSheetValues(responseSheet.getLastRow(), 2, 1, 3);
+      const responseBody = response[0][0].toString();
+      const responseEmail = notifyingMail = (response[0][1].toString() == "Yes" ? response[0][2].toString() : (response[0][1].toString().length == 0 ? notifyingMail : response[0][1].toString()));
+      const formResponse = responseBody.split('||')
+      const links = formResponse[0].split(',')
       let foldering, uniBlacklist, uniWhitelist
 
       if (formResponse[1])
@@ -99,9 +113,9 @@ function interconnectionDecipher(funcCaller) {
       }
       let snipDeterminer
       if (errList != "") // && listFromSearch != null
-        GmailApp.sendEmail('20071a10a7@vnrvjiet.in',
+        GmailApp.sendEmail(responseEmail,
           'Errors While Checking Note Building Files', errList +
-          "\nRe-Check: https://docs.google.com/forms/d/e/1FAIpQLSeFcC_gUAVXUydg__n0LiJDhYlhpdzira_C5KILG0iVx61xXA/viewform?usp=pp_url&entry.1799046854=" + responseBody.replace(/\s/g, "+").replace('|', "%7C"))
+          `\nRe-Check: ${formBaseLink}/viewform?usp=pp_url&entry.1799046854=` + responseBody.replace(/\s/g, "+").replace('|', "%7C"))
       else try {
         if (pdfLinks.length) {
           addPDFsToRawArr();
@@ -119,10 +133,10 @@ function interconnectionDecipher(funcCaller) {
           docCreater(instsList)
         }
 
-        GmailApp.sendEmail('20071a10a7@vnrvjiet.in', 'No Errors While Checking Note Building Files', (snipDeterminer) ? 'Snips program called.' : null)
+        GmailApp.sendEmail(responseEmail, 'No Errors While Checking Note Building Files', (snipDeterminer) ? 'Snips program called.' : null)
       }
       catch (err) {
-        GmailApp.sendEmail('20071a10a7@vnrvjiet.in', 'Error While Calling Snipper', err + "\nImageLinks: " + rawFileLinks + "\nPdfLinks: " + pdfLinks)
+        GmailApp.sendEmail(responseEmail, 'Error While Calling Snipper', err + "\nImageLinks: " + rawFileLinks + "\nPdfLinks: " + pdfLinks)
       }
     } break;
 
@@ -160,7 +174,7 @@ function interconnectionDecipher(funcCaller) {
         docCreater(implBuildInst);
       }
       catch (err) {
-        GmailApp.sendEmail('20071a10a7@vnrvjiet.in', 'Error while creating the document', err)
+        GmailApp.sendEmail(notifyingMail, 'Error while creating the document', err)
       }
 
     } break;
@@ -303,7 +317,7 @@ function getSnipsFromRaw(links) {
   if (!links.length)
     return null
   let pageCounter = 0
-  const slidesId = '1eBEP1k6B0MZJHJCtk25vdwOnlr3B3QxrmbCuZ4tLmQk',
+  const slidesId = slideID,
     snipsHolder = SlidesApp.openById(slidesId),
     pageDim = [450, 720]
 
@@ -364,12 +378,14 @@ function getSnipsFromRaw(links) {
         }
         arrOfSnipInst[arrFinder][j].rawInst.anchor = [++pageCounter, [anchr[0], anchr[1], anchr[2], anchr[3]]]
 
-        //  Insert Shapes For Better View
-        /*
-        let placeHolderShape = subSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, anchr[0] * pageDim[1], anchr[1] * pageDim[0], (anchr[2] - anchr[0]) * pageDim[1], (anchr[3] - anchr[1]) * pageDim[0])
-        placeHolderShape.getFill().setTransparent()
-        placeHolderShape.getBorder().setWeight(4).getLineFill().setSolidFill('#ff0000')
-        */
+        if(debugShowBoxes) {
+          let placeHolderShape = subSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, anchr[0] * pageDim[1], anchr[1] * pageDim[0], (anchr[2] - anchr[0]) * pageDim[1], (anchr[3] - anchr[1]) * pageDim[0])
+          placeHolderShape.getFill().setTransparent()
+          placeHolderShape.getBorder().setWeight(4).getLineFill().setSolidFill('#ff0000')
+        }
+        
+
+        
       }
     }
     mainSlide.remove()
@@ -424,7 +440,7 @@ function getSnipDataFromPDF(midFileData, mode) {
 
   if (!midFileData)
     return null
-  let logTxt = midFileData[0], scanFileData = midFileData[1]
+  let logTxt = midFileData[0] + '|' + notifyingMail, scanFileData = midFileData[1]
   const currentDate = new Date().getUTCDate().toString() + '_' + new Date().getUTCMonth().toString() + '_' + new Date().getUTCFullYear().toString() + '_' + new Date().getMinutes().toString()
   //name is to be decided by the anchoring and what not?
 
@@ -453,7 +469,7 @@ function getSnipDataFromPDF(midFileData, mode) {
   sortedArr = sortOnInstructions(filterInstArr(sortedArr));
 
   let scriptCallbackInst = midProcessFolder.createFile('sriptCallbackInst.txt', JSON.stringify(sortedArr), 'text/plain').getId()
-  CalendarApp.getCalendarById('eqhtn51codv14m2hvvo1fioop0@group.calendar.google.com').createEvent('RunFlows', new Date('January 1, 2120'), new Date('January 1, 2120')).setDescription(flowsInstructions + " | " + scriptCallbackInst)
+  CalendarApp.getCalendarById(toFlowCalendarID).createEvent('RunFlows', new Date('January 1, 2120'), new Date('January 1, 2120')).setDescription(flowsInstructions + " | " + scriptCallbackInst)
 
   return 1
 
@@ -729,7 +745,7 @@ function processInsructs(arr, rawName, instSource) {
 
           // Decipher and structurize the instructions from comments content
           instList = arr[i].rawInst.inst.split('\n')
-          console.log(arr[i])
+          // console.log(arr[i])
           for (let j = 0, instListLen = instList.length; j < instListLen; ++j) {
             
             let currentInst = instList[j].replace(/\s/g, '').toUpperCase().split(':'),
@@ -983,7 +999,7 @@ function processInsructs(arr, rawName, instSource) {
           if (!arr[i].implInst.infoAbstract.source)
             arr[i].implInst.infoAbstract.source = 'CLG' //Temp simple prediction
           if (!arr[i].implInst.infoAbstract.impl)
-            errList += "Implimentation not mentioned for the comment id : " + arr[i].rawInst.reference + "\n"   //Temperorary, Later
+            errList += "Implementation not mentioned for the comment id : " + arr[i].rawInst.reference + "\n"   //Temperorary, Later
           if (!arr[i].implInst.infoAbstract.hierarchy.ISA)                                                                 //send these through
             errList += "ISA not mentioned for the comment id : " + arr[i].rawInst.reference + "\n"              //predictorSys first
           for (let i = 0, lenT = infoSheetMapVlaues.length; i < lenT; ++i) {
