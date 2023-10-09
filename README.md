@@ -14,7 +14,7 @@ This is a complete cloud-based project built primarily on Google Suite of applic
 1. Upload files to google drive
 2. Set there share status to public
 3. Select required sub-snippet regions on PDF or Image files with the comment's adhering to the [syntax mentioned](https://docs.google.com/document/d/1pbxdFL0Z2f1iqIg02PC6GQNMbWNAZ3l2PG5UnI94kio/edit).
-4. Copy the required file's shareable link and paste it to the interfacing form.
+4. Copy the required file's shareable link and paste it to the [interfacing form](https://docs.google.com/forms/d/e/1FAIpQLSdeTr5naEzs5xaJcmGYqy_Dqyl2wRxsvwi4VldxG1ReuS9Z4Q/viewform?usp=sf_link).
 5. Specify the mail you'd want to recieve real-time updates of the backend.
 6. Enjoy image snippets [here](https://drive.google.com/drive/u/0/folders/1uaxct9hfVcGow2e_vi92_jYOdfqv0Nr0) :) (This output folder is subjected to change in future)
 
@@ -36,3 +36,7 @@ The syntax depends on a custom note_taking-cum-documentation syntax I came up wi
 - Bug: It's throwing error for single page PDFs and multiple files.
 - Usage: The actual snippet generation can take a long time (approximately 40 Mins if not in test mode) due to the non-standard approach at making a Web Hook from Calendar API and Calendar Connector.
 - Standardize the tech stack
+
+  # Attributions
+  - PDF Merge and Split code by [pokyCoder](https://stackoverflow.com/users/11904337/pokycoder).
+  - Free (for professional use) [Encodian](https://www.encodian.com/products/flowr/) Images From PDF Power Automate Connector.
