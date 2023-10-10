@@ -1,5 +1,7 @@
 **Disclaimer**: This is a personal project with no intention of commercial gain.
 
+Form: https://docs.google.com/forms/d/e/1FAIpQLSdeTr5naEzs5xaJcmGYqy_Dqyl2wRxsvwi4VldxG1ReuS9Z4Q/viewform?usp=sf_link
+
 # G-Suite Integrated Image Snippet Generator
 This project aims to generate snippets of images from PDF or Image files from the comfort of one's own Google Drive. The application is designed to use the commenting featue of Google Drive to extract specific areas of images from PDFs or Images. This is a complete cloud-based project built primarily on Google Suite of applications with the additon of Microsoft Power Automate as the main processing unit. 
 
